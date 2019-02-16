@@ -235,13 +235,21 @@ class LambertianPointLight(Ch):
 # Pol: Optimize using Numba and CPU/GPU maybe?
 def LightDotNormal(num_verts):
 
-    normalize_rows = lambda v : v / ch.sqrt(ch.sum(v.reshape((-1,3))**2, axis=1)).reshape((-1,1))
+    def normalize_rows(v):
+        b=ch.sqrt(ch.sum(v.reshape((-1,3))**2, axis=1)).reshape((-1,1))
+        return v/b.compute_r()
+
     sum_rows = lambda v :  ch.sum(v.reshape((-1,3)), axis=1)
 
-    return Ch(lambda light_pos, v, vn :
-        sum_rows(normalize_rows(light_pos.reshape((1,3)) - v.reshape((-1,3))) * vn.reshape((-1,3))))
+    def f(light_pos, v, vn):
+        light_pos=light_pos[0,]
+        a=np.array([light_pos,light_pos,light_pos])
+        v=v[0,]
+        b=np.array([v,v,v])
+        return sum_rows(normalize_rows(a - b)* vn.reshape((-1, 3)))
 
 
+    return Ch(f)
 
 def main():
     pass
