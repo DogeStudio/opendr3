@@ -120,6 +120,9 @@ class BaseRenderer(Ch):
             except:
                 pdb.set_trace()
 
+    def init2(self): # 专门给up初始化vbo_verts_face
+        self.vbo_verts_face = vbo.VBO(self.verts_by_face.astype(np.float32))
+
     def initGL(self):
         try:
             self.frustum
@@ -127,6 +130,7 @@ class BaseRenderer(Ch):
             self.v
             self.vc
             self.glMode
+
         except:
             print ("Necessary variables have not been set (frustum, f, v, or vc).")
             return
@@ -147,7 +151,6 @@ class BaseRenderer(Ch):
             glfw.make_context_current(self.win)
 
         else: #Mesa
-
             from OpenGL import arrays
             from OpenGL.raw.osmesa import mesa
             try:
@@ -159,7 +162,6 @@ class BaseRenderer(Ch):
             self.buf = arrays.GLubyteArray.zeros((self.frustum['height'], self.frustum['width'], 3))
             self.mesap = arrays.ArrayDatatype.dataPointer(self.buf)
             assert(mesa.OSMesaMakeCurrent(self.ctx, GL.GLuint(self.mesap), GL.GL_UNSIGNED_BYTE, self.frustum['width'], self.frustum['height']))
-
         GL.USE_ACCELERATE = True
 
         GL.glViewport(0, 0, self.frustum['width'], self.frustum['height'])
