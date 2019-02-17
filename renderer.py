@@ -120,9 +120,6 @@ class BaseRenderer(Ch):
             except:
                 pdb.set_trace()
 
-    def init2(self): # 专门给up初始化vbo_verts_face
-        self.vbo_verts_face = vbo.VBO(self.verts_by_face.astype(np.float32))
-
     def initGL(self):
         try:
             self.frustum
